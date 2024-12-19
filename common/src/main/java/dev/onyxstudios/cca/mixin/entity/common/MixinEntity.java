@@ -29,14 +29,18 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.sync.ComponentPacketWriter;
 import dev.onyxstudios.cca.internal.entity.CardinalComponentsEntity;
 import dev.onyxstudios.cca.internal.entity.CardinalEntityInternals;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -47,10 +51,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+//TODO
 @Mixin(Entity.class)
 public abstract class MixinEntity implements ComponentProvider {
     @Unique
@@ -83,10 +87,18 @@ public abstract class MixinEntity implements ComponentProvider {
     }
 
     @Override
-    public Iterable<ServerPlayer> getRecipientsForComponentSync() {
+    public Iterable<ServerPlayer> getRecipientsForComponentSync() {//this is not important for you rn
         Entity holder = (Entity) (Object) this;
         if (!this.level.isClientSide) {
-            Deque<ServerPlayer> watchers = new ArrayDeque<>(PlayerLookup.tracking(holder));
+            Collection<ServerPlayer> tracked;
+            ChunkMap map = ((ServerChunkCache)this.level.getChunkSource()).chunkMap;
+            ChunkMapAccess.TrackedEntityAccess trackedEntityAccess = ((ChunkMapAccess) map).getEntityMap().get(this.getId());
+            if (trackedEntityAccess != null) {
+                tracked = trackedEntityAccess.getSeenBy().stream().map(ServerPlayerConnection::getPlayer).distinct().toList();
+            } else {
+                tracked = new ArrayList<>();
+            }
+            Deque<ServerPlayer> watchers = new ArrayDeque<>(tracked);
             if (holder instanceof ServerPlayer player && player.connection != null) {
                 watchers.addFirst(player);
             }
@@ -98,7 +110,7 @@ public abstract class MixinEntity implements ComponentProvider {
     @Nullable
     @Override
     public <C extends AutoSyncedComponent> ClientboundCustomPayloadPacket toComponentPacket(ComponentKey<? super C> key, ComponentPacketWriter writer, ServerPlayer recipient) {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeInt(this.getId());
         buf.writeResourceLocation(key.getId());
         writer.writeSyncPacket(buf, recipient);

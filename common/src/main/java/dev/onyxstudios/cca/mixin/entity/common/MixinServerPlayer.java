@@ -30,8 +30,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+//TODO
 @Mixin(ServerPlayer.class)
-public abstract class MixinServerPlayerEntity implements SwitchablePlayerEntity {
+public abstract class MixinServerPlayer implements SwitchablePlayerEntity {
     private transient boolean switchingCharacter = false;
 
     @Override
@@ -44,7 +45,7 @@ public abstract class MixinServerPlayerEntity implements SwitchablePlayerEntity 
         return this.switchingCharacter;
     }
 
-    @Inject(method = "copyFrom", at = @At("RETURN"))
+    @Inject(method = "restoreFrom", at = @At("RETURN"))
     private void copyDataFrom(ServerPlayer original, boolean lossless, CallbackInfo ci) {
         PlayerCopyCallback.EVENT.invoker().copyData(original, (ServerPlayer) (Object) this, lossless);
     }

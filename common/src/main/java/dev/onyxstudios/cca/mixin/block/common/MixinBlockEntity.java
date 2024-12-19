@@ -29,13 +29,14 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.sync.ComponentPacketWriter;
 import dev.onyxstudios.cca.internal.CardinalComponentsBlock;
 import dev.onyxstudios.cca.internal.block.CardinalBlockInternals;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -63,7 +64,8 @@ public abstract class MixinBlockEntity implements ComponentProvider {
 
     @Shadow
     public abstract BlockEntityType<?> getType();
-
+    
+    @Shadow @Nullable protected Level level;
     @Unique
     private ComponentContainer components;
 
@@ -111,8 +113,8 @@ public abstract class MixinBlockEntity implements ComponentProvider {
     public Iterable<ServerPlayer> getRecipientsForComponentSync() {
         Level world = this.getLevel();
 
-        if (world != null && !world.isClientSide) {
-            return PlayerLookup.tracking((BlockEntity) (Object) this);
+        if (world != null && !world.isClientSide) {//very hacky
+            return ((ServerLevel)this.level).getChunkSource().chunkMap.getPlayers(new ChunkPos(this.getBlockPos()), false);
         }
         return List.of();
     }
@@ -120,7 +122,7 @@ public abstract class MixinBlockEntity implements ComponentProvider {
     @Nullable
     @Override
     public <C extends AutoSyncedComponent> ClientboundCustomPayloadPacket toComponentPacket(ComponentKey<? super C> key, ComponentPacketWriter writer, ServerPlayer recipient) {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeResourceLocation(BlockEntityType.getKey(this.getType()));
         buf.writeBlockPos(this.getBlockPos());
         buf.writeResourceLocation(key.getId());

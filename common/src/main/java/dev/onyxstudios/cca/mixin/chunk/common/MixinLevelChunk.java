@@ -27,8 +27,7 @@ import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.sync.ComponentPacketWriter;
 import dev.onyxstudios.cca.internal.chunk.ComponentsChunkNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
@@ -65,14 +64,14 @@ public abstract class MixinLevelChunk extends ChunkAccess implements ComponentPr
     @Override
     public Iterable<ServerPlayer> getRecipientsForComponentSync() {
         if (!this.getLevel().isClientSide()) {
-            return PlayerLookup.tracking((ServerLevel) this.getLevel(), this.getPos());
+            return ((ServerLevel)getLevel()).getChunkSource().chunkMap.getPlayers(this.getPos(), false);
         }
         return List.of();
     }
 
     @Override
     public <C extends AutoSyncedComponent> ClientboundCustomPayloadPacket toComponentPacket(ComponentKey<? super C> key, ComponentPacketWriter writer, ServerPlayer recipient) {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         ChunkPos pos = this.getPos();
         buf.writeInt(pos.x);
         buf.writeInt(pos.z);

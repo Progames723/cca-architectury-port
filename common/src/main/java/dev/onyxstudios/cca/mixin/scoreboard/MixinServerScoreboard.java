@@ -29,7 +29,7 @@ import dev.onyxstudios.cca.api.v3.scoreboard.TeamAddCallback;
 import dev.onyxstudios.cca.internal.scoreboard.ComponentsScoreboardNetworking;
 import dev.onyxstudios.cca.internal.scoreboard.ScoreboardComponentContainerFactory;
 import dev.onyxstudios.cca.internal.scoreboard.StaticScoreboardComponentPlugin;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.server.MinecraftServer;
@@ -71,7 +71,7 @@ public abstract class MixinServerScoreboard extends MixinScoreboard {
     @Nullable
     @Override
     public <C extends AutoSyncedComponent> ClientboundCustomPayloadPacket toComponentPacket(ComponentKey<? super C> key, ComponentPacketWriter writer, ServerPlayer recipient) {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeResourceLocation(key.getId());
         writer.writeSyncPacket(buf, recipient);
         return new ClientboundCustomPayloadPacket(ComponentsScoreboardNetworking.SCOREBOARD_PACKET_ID, buf);

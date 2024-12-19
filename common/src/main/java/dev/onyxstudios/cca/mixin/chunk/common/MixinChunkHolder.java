@@ -23,7 +23,6 @@
 package dev.onyxstudios.cca.mixin.chunk.common;
 
 import dev.onyxstudios.cca.api.v3.chunk.ChunkSyncCallback;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -50,7 +49,7 @@ public abstract class MixinChunkHolder {
             )
     )
     private void onPlayerLogIn(LevelChunk chunk, CallbackInfo ci) {
-        for (ServerPlayer p : PlayerLookup.tracking((ServerLevel) chunk.getLevel(), chunk.getPos())) {
+        for (ServerPlayer p : ((ServerLevel) chunk.getLevel()).getChunkSource().chunkMap.getPlayers(chunk.getPos(), false)) {
             ChunkSyncCallback.EVENT.invoker().onChunkSync(p, chunk);
         }
     }

@@ -32,7 +32,7 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.sync.ComponentPacketWriter;
 import dev.onyxstudios.cca.internal.level.ComponentsLevelNetworking;
 import dev.onyxstudios.cca.internal.level.StaticLevelComponentPlugin;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -94,7 +94,7 @@ public abstract class MixinPrimaryLevelData implements ServerLevelData, Componen
     @Nullable
     @Override
     public <C extends AutoSyncedComponent> ClientboundCustomPayloadPacket toComponentPacket(ComponentKey<? super C> key, ComponentPacketWriter writer, ServerPlayer recipient) {
-        FriendlyByteBuf buf = PacketByteBufs.create();
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeResourceLocation(key.getId());
         writer.writeSyncPacket(buf, recipient);
         return new ClientboundCustomPayloadPacket(ComponentsLevelNetworking.PACKET_ID, buf);

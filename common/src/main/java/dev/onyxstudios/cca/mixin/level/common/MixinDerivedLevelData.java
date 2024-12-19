@@ -35,11 +35,11 @@ import net.minecraft.world.level.storage.ServerLevelData;
 @Mixin(DerivedLevelData.class)
 public abstract class MixinDerivedLevelData implements ComponentProvider {
 
-    @Shadow @Final private ServerLevelData worldProperties;
+    @Shadow @Final private ServerLevelData wrapped;
 
     @Nonnull
     @Override
     public ComponentContainer getComponentContainer() {
-        return this.worldProperties.getComponentContainer().getComponentContainer();
+        return this.wrapped.getComponentContainer().getComponentContainer();
     }
 }
