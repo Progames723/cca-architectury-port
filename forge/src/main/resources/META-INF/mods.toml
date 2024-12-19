@@ -1,0 +1,29 @@
+modLoader = "javafml"
+loaderVersion = "[3,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "cca-architectury-port"
+version = "${version}"
+displayName = "Cardinal Components API(Architectury port)"
+authors = "Progames723 and the original developers!"
+description = '''
+yes this is literally a port
+'''
+logoFile = "assets/icon.png"
+
+[[dependencies.cca-architectury-port]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.cca-architectury-port]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"
+

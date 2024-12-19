@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "cca-architectury-port",
+  "version": "${version}",
+  "name": "Cardinal Components API(Architectury port)",
+  "description": "yes this is literally a port",
+  "authors": [
+    "Progames723",
+    "and the original developers!"
+  ],
+  "contact": {
+    "homepage": ""
+  },
+  "license": "MIT",
+  "icon": "assets/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+    ],
+    "client": [
+    ]
+  },
+  "mixins": [
+    "cca-architectury-port.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.5",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
