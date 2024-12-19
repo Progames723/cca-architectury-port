@@ -22,8 +22,8 @@
  */
 package dev.onyxstudios.cca.api.v3.chunk;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.chunk.LevelChunk;
 
@@ -32,11 +32,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
  */
 @FunctionalInterface
 public interface ChunkSyncCallback {
-    Event<ChunkSyncCallback> EVENT = EventFactory.createArrayBacked(ChunkSyncCallback.class, (p, chunk) -> {}, listeners -> (player, chunk) -> {
-        for (ChunkSyncCallback callback : listeners) {
-            callback.onChunkSync(player, chunk);
-        }
-    });
+    Event<ChunkSyncCallback> EVENT = EventFactory.createLoop();
 
     /**
      * Called when a chunk's data is sent to a player

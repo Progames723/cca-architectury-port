@@ -22,18 +22,14 @@
  */
 package dev.onyxstudios.cca.api.v3.entity;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 
 @FunctionalInterface
 public interface TrackingStartCallback {
-    Event<TrackingStartCallback> EVENT = EventFactory.createArrayBacked(TrackingStartCallback.class, (p, e) -> {}, listeners -> (player, entity) -> {
-        for (TrackingStartCallback callback : listeners) {
-            callback.onPlayerStartTracking(player, entity);
-        }
-    });
+    Event<TrackingStartCallback> EVENT = EventFactory.createLoop();
 
     void onPlayerStartTracking(ServerPlayer player, Entity entity);
 }

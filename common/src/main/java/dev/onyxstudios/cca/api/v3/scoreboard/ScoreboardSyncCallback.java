@@ -22,8 +22,8 @@
  */
 package dev.onyxstudios.cca.api.v3.scoreboard;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.scores.Scoreboard;
 
@@ -32,11 +32,7 @@ import net.minecraft.world.scores.Scoreboard;
  */
 @FunctionalInterface
 public interface ScoreboardSyncCallback {
-    Event<ScoreboardSyncCallback> EVENT = EventFactory.createArrayBacked(ScoreboardSyncCallback.class, (p, t) -> {}, listeners -> (player, scoreboard) -> {
-        for (ScoreboardSyncCallback callback : listeners) {
-            callback.onScoreboardSync(player, scoreboard);
-        }
-    });
+    Event<ScoreboardSyncCallback> EVENT = EventFactory.createLoop();
 
     /**
      * Called when a team's data is sent to a player

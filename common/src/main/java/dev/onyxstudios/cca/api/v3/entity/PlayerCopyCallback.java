@@ -22,8 +22,9 @@
  */
 package dev.onyxstudios.cca.api.v3.entity;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -32,13 +33,7 @@ import net.minecraft.server.level.ServerPlayer;
  */
 @FunctionalInterface
 public interface PlayerCopyCallback {
-    Event<PlayerCopyCallback> EVENT = EventFactory.createArrayBacked(PlayerCopyCallback.class, (listeners) ->
-            (original, clone, lossless) -> {
-                for (PlayerCopyCallback callback : listeners) {
-                    callback.copyData(original, clone, lossless);
-                }
-            }
-    );
+    Event<PlayerCopyCallback> EVENT = EventFactory.createLoop();
 
     /**
      * Copy mod data from a player to its clone.

@@ -22,8 +22,9 @@
  */
 package dev.onyxstudios.cca.api.v3.scoreboard;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import net.minecraft.world.scores.PlayerTeam;
 
 /**
@@ -31,11 +32,7 @@ import net.minecraft.world.scores.PlayerTeam;
  */
 @FunctionalInterface
 public interface TeamAddCallback {
-    Event<TeamAddCallback> EVENT = EventFactory.createArrayBacked(TeamAddCallback.class, (t) -> {}, listeners -> (team) -> {
-        for (TeamAddCallback callback : listeners) {
-            callback.onTeamAdded(team);
-        }
-    });
+    Event<TeamAddCallback> EVENT = EventFactory.createLoop();
 
     /**
      * Called when a team's data is sent to all players

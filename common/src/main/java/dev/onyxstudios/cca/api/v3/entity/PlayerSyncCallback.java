@@ -22,8 +22,8 @@
  */
 package dev.onyxstudios.cca.api.v3.entity;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -31,11 +31,7 @@ import net.minecraft.server.level.ServerPlayer;
  */
 @FunctionalInterface
 public interface PlayerSyncCallback {
-    Event<PlayerSyncCallback> EVENT = EventFactory.createArrayBacked(PlayerSyncCallback.class, (p) -> {}, listeners -> (player) -> {
-        for (PlayerSyncCallback callback : listeners) {
-            callback.onPlayerSync(player);
-        }
-    });
+    Event<PlayerSyncCallback> EVENT = EventFactory.createLoop();
 
     /**
      * Called when a player eg. joins the server or changes dimension, can be used to synchronize the player's own data
