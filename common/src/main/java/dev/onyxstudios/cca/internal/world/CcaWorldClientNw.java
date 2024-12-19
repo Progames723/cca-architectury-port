@@ -20,55 +20,48 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.onyxstudios.cca.internal.level;
+package dev.onyxstudios.cca.internal.world;
 
 import dev.architectury.networking.NetworkManager;
-import dev.architectury.utils.Env;
 import dev.onyxstudios.cca.api.v3.component.Component;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.internal.base.ComponentsInternals;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.loader.api.FabricLoader;
+import dev.onyxstudios.cca.internal.level.ComponentsLevelNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
 
-public final class CcaLevelClientNw {
-	public static void initClient() {
-		//redundant
-//		if (FabricLoader.getInstance().isModLoaded("fabric-networking-api-v1")) {}
-		ClientPlayNetworking.registerGlobalReceiver(ComponentsLevelNetworking.PACKET_ID, (client, handler, buffer, res) -> {
-			try {
-				ResourceLocation componentTypeId = buffer.readResourceLocation();
-				ComponentKey<?> componentKey = ComponentRegistry.get(componentTypeId);
-				
-				if (componentKey == null) {
-					return;
-				}
-				
-				FriendlyByteBuf copy = new FriendlyByteBuf(buffer.copy());
-				client.execute(() -> {
-					try {
-						assert client.level != null;
-						Component c = componentKey.get(client.level.getLevelData());
-						
-						if (c instanceof AutoSyncedComponent) {
-							((AutoSyncedComponent) c).applySyncPacket(copy);
-						}
-					} finally {
-						copy.release();
-					}
-				});
-			} catch (Exception e) {
-				ComponentsInternals.LOGGER.error("Error while reading world save components from network", e);
-				throw e;
-			}
-		});
-	}
+public final class CcaWorldClientNw {
+    public static void initClient() {
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, ComponentsWorldNetworking.PACKET_ID, ((buf, packetContext) -> {
+            try {
+                Minecraft client = Minecraft.getInstance();
+                ResourceLocation componentTypeId = buf.readResourceLocation();
+                ComponentKey<?> componentType = ComponentRegistry.get(componentTypeId);
+                
+                if (componentType == null) {
+                    return;
+                }
+                
+                buf.retain();
+                
+                client.execute(() -> {
+                    try {
+                        assert client.level != null;
+                        Component c = componentType.get(client.level);
+                        if (c instanceof AutoSyncedComponent) {
+                            ((AutoSyncedComponent) c).applySyncPacket(buf);
+                        }
+                    } finally {
+                        buf.release();
+                    }
+                });
+            } catch (Exception e) {
+                ComponentsInternals.LOGGER.error("Error while reading world components from network", e);
+                throw e;
+            }
+        }));
+    }
 }

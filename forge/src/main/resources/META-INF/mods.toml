@@ -27,3 +27,9 @@ versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.cca-architectury-port]]
+modId = "architectury"
+mandatory = true
+versionRange = "[9.1.12,)"
+ordering = "AFTER"
+side = "BOTH"
