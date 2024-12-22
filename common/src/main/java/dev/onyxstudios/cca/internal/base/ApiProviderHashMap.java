@@ -20,29 +20,32 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.onyxstudios.cca.mixin.entity.common;
+package dev.onyxstudios.cca.internal.base;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.item.ItemStack;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import dev.onyxstudios.cca.api.v3.component.ApiProviderMap;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
-@Mixin(Bucketable.class)
-public interface BucketableMixin {
-    @Inject(method = "saveDefaultDataToBucketTag", at = @At("RETURN"))
-    private static void writeComponentsToStack(Mob entity, ItemStack stack, CallbackInfo ci) {
-        CompoundTag nbt = stack.getTag();
-        if (nbt != null) {
-            entity.getComponentContainer().toTag(nbt);
-        }
-    }
+import java.util.Map;
+import java.util.Objects;
 
-    @Inject(method = "loadDefaultDataFromBucketTag", at = @At("RETURN"))
-    private static void readComponentsFromStack(Mob entity, CompoundTag nbt, CallbackInfo ci) {
-        entity.getComponentContainer().fromTag(nbt);
-    }
+public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V> {
+	private volatile Map<K, V> lookups = new Reference2ReferenceOpenHashMap<>();
+	
+	public ApiProviderHashMap() {
+	}
+	
+	public @Nullable V get(K key) {
+		Objects.requireNonNull(key, "Key may not be null.");
+		return this.lookups.get(key);
+	}
+	
+	public synchronized V putIfAbsent(K key, V provider) {
+		Objects.requireNonNull(key, "Key may not be null.");
+		Objects.requireNonNull(provider, "Provider may not be null.");
+		Map<K, V> lookupsCopy = new Reference2ReferenceOpenHashMap<>(this.lookups);
+		V result = lookupsCopy.putIfAbsent(key, provider);
+		this.lookups = lookupsCopy;
+		return result;
+	}
 }

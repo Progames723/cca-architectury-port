@@ -33,7 +33,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-//TODO
 @Mixin(ServerEntity.class)
 public abstract class MixinEntityTrackerEntry {
     @Shadow

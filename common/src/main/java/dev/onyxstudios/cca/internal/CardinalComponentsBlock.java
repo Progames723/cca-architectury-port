@@ -27,7 +27,6 @@ import dev.onyxstudios.cca.api.v3.block.BlockEntitySyncCallback;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
@@ -48,19 +47,17 @@ public class CardinalComponentsBlock {
     public static final ResourceLocation PACKET_ID = new ResourceLocation("cardinal-components", "block_entity_sync");
 
     public static void init() {
-        if (FabricLoader.getInstance().isModLoaded("fabric-networking-api-v1")) {
-            BlockEntitySyncCallback.EVENT.register((player, tracked) -> {
-                ComponentProvider provider = (ComponentProvider) tracked;
-
-                for (ComponentKey<?> key : provider.getComponentContainer().keys()) {
-                    key.syncWith(player, provider);
-                }
-            });
-            BlockEntitySyncAroundCallback.EVENT.register(tracked -> {
-                for (ComponentKey<?> key : ((ComponentProvider) tracked).getComponentContainer().keys()) {
-                    tracked.syncComponent(key);
-                }
-            });
-        }
+        BlockEntitySyncCallback.EVENT.register((player, tracked) -> {
+            ComponentProvider provider = (ComponentProvider) tracked;
+            
+            for (ComponentKey<?> key : provider.getComponentContainer().keys()) {
+                key.syncWith(player, provider);
+            }
+        });
+        BlockEntitySyncAroundCallback.EVENT.register(tracked -> {
+            for (ComponentKey<?> key : ((ComponentProvider) tracked).getComponentContainer().keys()) {
+                tracked.syncComponent(key);
+            }
+        });
     }
 }

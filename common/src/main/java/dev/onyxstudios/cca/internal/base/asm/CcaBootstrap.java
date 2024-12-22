@@ -23,16 +23,16 @@
 package dev.onyxstudios.cca.internal.base.asm;
 
 import com.google.common.annotations.VisibleForTesting;
-import dev.onyxstudios.cca.api.v3.component.ComponentKey;
-import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
-import dev.onyxstudios.cca.api.v3.component.StaticComponentInitializer;
+import dev.onyxstudios.cca.api.v3.component.*;
+import dev.onyxstudios.cca.internal.base.ComponentRegistryImpl;
 import dev.onyxstudios.cca.internal.base.LazyDispatcher;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.ResourceLocationException;
+import dev.onyxstudios.cca.internal.block.StaticBlockComponentPlugin;
+import dev.onyxstudios.cca.internal.chunk.StaticChunkComponentPlugin;
+import dev.onyxstudios.cca.internal.entity.StaticEntityComponentPlugin;
+import dev.onyxstudios.cca.internal.item.StaticItemComponentPlugin;
+import dev.onyxstudios.cca.internal.level.StaticLevelComponentPlugin;
+import dev.onyxstudios.cca.internal.scoreboard.StaticScoreboardComponentPlugin;
+import dev.onyxstudios.cca.internal.world.StaticWorldComponentPlugin;
 import net.minecraft.resources.ResourceLocation;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -44,15 +44,12 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.*;
 
-//TODO exterminate fabric
 public final class CcaBootstrap extends LazyDispatcher {
 
     public static final String COMPONENT_TYPE_INIT_DESC = Type.getMethodDescriptor(Type.VOID_TYPE, Type.getObjectType(CcaAsmHelper.IDENTIFIER), Type.getType(Class.class));
     public static final String COMPONENT_TYPE_GET0_DESC = "(L" + CcaAsmHelper.COMPONENT_CONTAINER + ";)L" + CcaAsmHelper.COMPONENT + ";";
     public static final String STATIC_INIT_ENTRYPOINT = "cardinal-components:static-init";
     public static final CcaBootstrap INSTANCE = new CcaBootstrap();
-
-    private final List<EntrypointContainer<StaticComponentInitializer>> staticComponentInitializers = FabricLoader.getInstance().getEntrypointContainers(STATIC_INIT_ENTRYPOINT, StaticComponentInitializer.class);
 
     @VisibleForTesting Collection<ResourceLocation> additionalComponentIds = new ArrayList<>();
     private Map<ResourceLocation, Class<? extends ComponentKey<?>>> generatedComponentTypes = new HashMap<>();
@@ -75,31 +72,21 @@ public final class CcaBootstrap extends LazyDispatcher {
 
     @Override
     protected void init() {
+        StaticComponentRegistrationEvents.REGISTER_BLOCK_ENTITY.invoker().register(StaticBlockComponentPlugin.INSTANCE);
+        StaticComponentRegistrationEvents.REGISTER_CHUNK.invoker().register(StaticChunkComponentPlugin.INSTANCE);
+        StaticComponentRegistrationEvents.REGISTER_ENTITY.invoker().register(StaticEntityComponentPlugin.INSTANCE);
+        StaticComponentRegistrationEvents.REGISTER_ITEM.invoker().register(StaticItemComponentPlugin.INSTANCE);
+        StaticComponentRegistrationEvents.REGISTER_LEVEL.invoker().register(StaticLevelComponentPlugin.INSTANCE);
+        StaticComponentRegistrationEvents.REGISTER_SCOREBOARD.invoker().register(StaticScoreboardComponentPlugin.INSTANCE);
+        StaticComponentRegistrationEvents.REGISTER_WORLD.invoker().register(StaticWorldComponentPlugin.INSTANCE);
+        
         try {
             Set<ResourceLocation> staticComponentTypes = new TreeSet<>(Comparator.comparing(ResourceLocation::toString));
-
-            for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-                ModMetadata metadata = mod.getMetadata();
-                if (metadata.containsCustomValue("cardinal-components")) {
-                    try {
-                        for (CustomValue value : metadata.getCustomValue("cardinal-components").getAsArray()) {
-                            staticComponentTypes.add(new ResourceLocation(value.getAsString()));
-                        }
-                    } catch (ClassCastException | ResourceLocationException e) {
-                        throw new StaticComponentLoadingException("Failed to load component ids declared by " + metadata.getName() + "(" + metadata.getId() + ")", e);
-                    }
-                }
-            }
-
-            for (EntrypointContainer<StaticComponentInitializer> staticInitializer : this.staticComponentInitializers) {
-                try {
-                    staticComponentTypes.addAll(staticInitializer.getEntrypoint().getSupportedComponentKeys());
-                } catch (Throwable e) {
-                    ModMetadata badMod = staticInitializer.getProvider().getMetadata();
-                    throw new StaticComponentLoadingException(String.format("Exception while querying %s (%s) for supported static component types", badMod.getName(), badMod.getId()), e);
-                }
-            }
-
+            
+            ComponentRegistryImpl.INSTANCE.stream().forEach(componentKey -> {
+                staticComponentTypes.add(componentKey.getId());
+            });
+            
             staticComponentTypes.addAll(this.additionalComponentIds);
 
             this.spinStaticContainerItf(staticComponentTypes);
@@ -111,9 +98,7 @@ public final class CcaBootstrap extends LazyDispatcher {
 
     @Override
     protected void postInit() {
-        for (EntrypointContainer<StaticComponentInitializer> staticInitializer : this.staticComponentInitializers) {
-            staticInitializer.getEntrypoint().finalizeStaticBootstrap();
-        }
+        StaticComponentRegistrationPostInitCallback.EVENT.invoker().postInit();
     }
 
     /**

@@ -22,38 +22,37 @@
  */
 package dev.onyxstudios.cca.api.v3.item;
 
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.*;
 
 @SuppressWarnings("unused")
 public final class CcaNbtType<T extends Tag> {
-    public static final CcaNbtType<ByteTag> BYTE = new CcaNbtType<>(NbtType.BYTE);
-    public static final CcaNbtType<ShortTag> SHORT = new CcaNbtType<>(NbtType.SHORT);
-    public static final CcaNbtType<IntTag> INT = new CcaNbtType<>(NbtType.INT);
-    public static final CcaNbtType<LongTag> LONG = new CcaNbtType<>(NbtType.LONG);
-    public static final CcaNbtType<FloatTag> FLOAT = new CcaNbtType<>(NbtType.FLOAT);
-    public static final CcaNbtType<DoubleTag> DOUBLE = new CcaNbtType<>(NbtType.DOUBLE);
-    public static final CcaNbtType<ByteArrayTag> BYTE_ARRAY = new CcaNbtType<>(NbtType.BYTE_ARRAY);
-    public static final CcaNbtType<StringTag> STRING = new CcaNbtType<>(NbtType.STRING);
-    public static final CcaNbtType<ListTag> LIST = new CcaNbtType<>(NbtType.LIST);
-    public static final CcaNbtType<CompoundTag> COMPOUND = new CcaNbtType<>(NbtType.COMPOUND);
-    public static final CcaNbtType<IntArrayTag> INT_ARRAY = new CcaNbtType<>(NbtType.INT_ARRAY);
-    public static final CcaNbtType<LongArrayTag> LONG_ARRAY = new CcaNbtType<>(NbtType.LONG_ARRAY);
+    public static final CcaNbtType<ByteTag> BYTE = new CcaNbtType<>(1);
+    public static final CcaNbtType<ShortTag> SHORT = new CcaNbtType<>(2);
+    public static final CcaNbtType<IntTag> INT = new CcaNbtType<>(3);
+    public static final CcaNbtType<LongTag> LONG = new CcaNbtType<>(4);
+    public static final CcaNbtType<FloatTag> FLOAT = new CcaNbtType<>(5);
+    public static final CcaNbtType<DoubleTag> DOUBLE = new CcaNbtType<>(6);
+    public static final CcaNbtType<ByteArrayTag> BYTE_ARRAY = new CcaNbtType<>(7);
+    public static final CcaNbtType<StringTag> STRING = new CcaNbtType<>(8);
+    public static final CcaNbtType<ListTag> LIST = new CcaNbtType<>(9);
+    public static final CcaNbtType<CompoundTag> COMPOUND = new CcaNbtType<>(10);
+    public static final CcaNbtType<IntArrayTag> INT_ARRAY = new CcaNbtType<>(11);
+    public static final CcaNbtType<LongArrayTag> LONG_ARRAY = new CcaNbtType<>(12);
 
     public static CcaNbtType<?> byId(int id) {
         return switch (id) {
-            case NbtType.BYTE -> BYTE;
-            case NbtType.SHORT -> SHORT;
-            case NbtType.INT -> INT;
-            case NbtType.LONG -> LONG;
-            case NbtType.FLOAT -> FLOAT;
-            case NbtType.DOUBLE -> DOUBLE;
-            case NbtType.BYTE_ARRAY -> BYTE_ARRAY;
-            case NbtType.STRING -> STRING;
-            case NbtType.LIST -> LIST;
-            case NbtType.COMPOUND -> COMPOUND;
-            case NbtType.INT_ARRAY -> INT_ARRAY;
-            case NbtType.LONG_ARRAY -> LONG_ARRAY;
+            case 1 -> BYTE;
+            case 2 -> SHORT;
+            case 3 -> INT;
+            case 4 -> LONG;
+            case 5 -> FLOAT;
+            case 6 -> DOUBLE;
+            case 7 -> BYTE_ARRAY;
+            case 8 -> STRING;
+            case 9 -> LIST;
+            case 10 -> COMPOUND;
+            case 11 -> INT_ARRAY;
+            case 12 -> LONG_ARRAY;
             default -> throw new IllegalArgumentException("Unsupported NBT Type " + id);
         };
     }

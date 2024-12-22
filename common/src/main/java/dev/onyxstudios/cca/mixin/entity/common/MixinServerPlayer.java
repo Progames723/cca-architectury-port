@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-//TODO
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer implements SwitchablePlayerEntity {
     private transient boolean switchingCharacter = false;

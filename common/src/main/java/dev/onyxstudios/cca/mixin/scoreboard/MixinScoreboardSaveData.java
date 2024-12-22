@@ -22,7 +22,6 @@
  */
 package dev.onyxstudios.cca.mixin.scoreboard;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -48,12 +47,12 @@ public abstract class MixinScoreboardSaveData {
 
     @Inject(method = "save", at = @At("RETURN"))
     private void saveComponents(CompoundTag tag, CallbackInfoReturnable<CompoundTag> cir) {
-        ((ComponentProvider) this.scoreboard).getComponentContainer().toTag(tag);
+        this.scoreboard.getComponentContainer().toTag(tag);
     }
 
     @Inject(method = "load", at = @At("RETURN"))
     private void loadComponents(CompoundTag tag, CallbackInfoReturnable<ScoreboardSaveData> ci) {
-        ((ComponentProvider) this.scoreboard).getComponentContainer().fromTag(tag);
+        this.scoreboard.getComponentContainer().fromTag(tag);
     }
 
     @Inject(
@@ -66,7 +65,7 @@ public abstract class MixinScoreboardSaveData {
         locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
     private void loadTeamComponents(ListTag teamsData, CallbackInfo ci, int i, CompoundTag teamData, String name, PlayerTeam team) {
-        ((ComponentProvider) team).getComponentContainer().fromTag(teamData);
+        team.getComponentContainer().fromTag(teamData);
     }
 
     @Inject(
@@ -85,6 +84,6 @@ public abstract class MixinScoreboardSaveData {
         PlayerTeam team,
         CompoundTag teamData
     ) {
-        ((ComponentProvider) team).getComponentContainer().toTag(teamData);
+        team.getComponentContainer().toTag(teamData);
     }
 }

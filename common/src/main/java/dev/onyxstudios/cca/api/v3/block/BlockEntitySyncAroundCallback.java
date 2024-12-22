@@ -22,8 +22,8 @@
  */
 package dev.onyxstudios.cca.api.v3.block;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
@@ -31,11 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  */
 @FunctionalInterface
 public interface BlockEntitySyncAroundCallback {
-    Event<BlockEntitySyncAroundCallback> EVENT = EventFactory.createArrayBacked(BlockEntitySyncAroundCallback.class, (be) -> {}, listeners -> (be) -> {
-        for (BlockEntitySyncAroundCallback callback : listeners) {
-            callback.onBlockEntitySync(be);
-        }
-    });
+    Event<BlockEntitySyncAroundCallback> EVENT = EventFactory.createLoop();
 
     /**
      * Called when a {@link BlockEntity}'s data is sent to watching players

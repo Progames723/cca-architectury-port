@@ -30,7 +30,6 @@ import dev.onyxstudios.cca.api.v3.component.ComponentContainer;
 import dev.onyxstudios.cca.api.v3.component.ComponentFactory;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentPluginBase;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.minecraft.world.level.chunk.ChunkAccess;
 
 import java.util.Collection;
@@ -47,16 +46,6 @@ public final class StaticChunkComponentPlugin extends StaticComponentPluginBase<
 
     private StaticChunkComponentPlugin() {
         super("loading a chunk", ChunkAccess.class);
-    }
-
-    @Override
-    protected Collection<EntrypointContainer<ChunkComponentInitializer>> getEntrypoints() {
-        return getComponentEntrypoints("cardinal-components-chunk", ChunkComponentInitializer.class);
-    }
-
-    @Override
-    protected void dispatchRegistration(ChunkComponentInitializer entrypoint) {
-        entrypoint.registerChunkComponentFactories(this);
     }
 
     @Override

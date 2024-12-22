@@ -30,7 +30,6 @@ import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.level.LevelComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.level.LevelComponentInitializer;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentPluginBase;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.minecraft.world.level.storage.LevelData;
 
 import java.util.Collection;
@@ -47,16 +46,6 @@ public final class StaticLevelComponentPlugin extends StaticComponentPluginBase<
 
     private StaticLevelComponentPlugin() {
         super("loading a world save", LevelData.class);
-    }
-
-    @Override
-    protected Collection<EntrypointContainer<LevelComponentInitializer>> getEntrypoints() {
-        return getComponentEntrypoints("cardinal-components-level", LevelComponentInitializer.class);
-    }
-
-    @Override
-    protected void dispatchRegistration(LevelComponentInitializer entrypoint) {
-        entrypoint.registerLevelComponentFactories(this);
     }
 
     @Override

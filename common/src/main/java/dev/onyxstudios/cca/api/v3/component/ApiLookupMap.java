@@ -20,29 +20,33 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.onyxstudios.cca.mixin.entity.common;
+package dev.onyxstudios.cca.api.v3.component;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.item.ItemStack;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import dev.onyxstudios.cca.internal.base.ApiLookupMapImpl;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus;
 
-@Mixin(Bucketable.class)
-public interface BucketableMixin {
-    @Inject(method = "saveDefaultDataToBucketTag", at = @At("RETURN"))
-    private static void writeComponentsToStack(Mob entity, ItemStack stack, CallbackInfo ci) {
-        CompoundTag nbt = stack.getTag();
-        if (nbt != null) {
-            entity.getComponentContainer().toTag(nbt);
-        }
-    }
+import java.util.Objects;
 
-    @Inject(method = "loadDefaultDataFromBucketTag", at = @At("RETURN"))
-    private static void readComponentsFromStack(Mob entity, CompoundTag nbt, CallbackInfo ci) {
-        entity.getComponentContainer().fromTag(nbt);
-    }
+@ApiStatus.NonExtendable
+public interface ApiLookupMap<L> extends Iterable<L> {
+	static <L> ApiLookupMap<L> create(LookupConstructor<L> lookupConstructor) {
+		Objects.requireNonNull(lookupConstructor, "Lookup factory may not be null.");
+		return new ApiLookupMapImpl<>(lookupConstructor);
+	}
+	
+	L getLookup(ResourceLocation var1, Class<?> var2, Class<?> var3);
+	
+	static <L> ApiLookupMap<L> create(LookupFactory<L> lookupFactory) {
+		return create((id, apiClass, contextClass) -> lookupFactory.get(apiClass, contextClass));
+	}
+	
+	@FunctionalInterface
+	interface LookupConstructor<L> {
+		L get(ResourceLocation var1, Class<?> var2, Class<?> var3);
+	}
+	
+	interface LookupFactory<L> {
+		L get(Class<?> var1, Class<?> var2);
+	}
 }

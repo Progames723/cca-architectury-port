@@ -25,7 +25,6 @@ package dev.onyxstudios.cca.api.v3.item;
 import dev.onyxstudios.cca.api.v3.component.Component;
 import dev.onyxstudios.cca.api.v3.component.ComponentFactory;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -150,7 +149,6 @@ public abstract class ItemComponent implements Component, ItemTagInvalidationLis
 
     /**
      * @see CompoundTag#getList(String, int)
-     * @see NbtType
      */
     protected ListTag getList(String key, int type) {
         CompoundTag rootTag = this.getRootTag();
@@ -298,7 +296,6 @@ public abstract class ItemComponent implements Component, ItemTagInvalidationLis
      * @return {@code true} if the {@link CompoundTag} storing this component's data has a subtag with the given {@code key}
      * and of the appropriate {@code type}, {@code false} otherwise
      * @see CompoundTag#contains(String, int)
-     * @see NbtType
      */
     protected boolean hasTag(String key, int type) {
         CompoundTag rootTag = this.getRootTag();
@@ -329,7 +326,6 @@ public abstract class ItemComponent implements Component, ItemTagInvalidationLis
      * @return the subtag with the given {@code key} from the {@link CompoundTag} storing this component's data,
      * or {@code null} if no such tag exists or is not of the right {@code type}
      * @see CompoundTag#get(String)
-     * @see NbtType
      */
     protected @Nullable Tag getTag(String key, int type) {
         Tag tag = this.getTag(key);

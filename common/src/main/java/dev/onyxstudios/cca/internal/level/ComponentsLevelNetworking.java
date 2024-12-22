@@ -25,7 +25,6 @@ package dev.onyxstudios.cca.internal.level;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.world.WorldSyncCallback;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -44,17 +43,13 @@ public final class ComponentsLevelNetworking {
     public static final ResourceLocation PACKET_ID = new ResourceLocation("cardinal-components", "level_sync");
 
     public static void init() {
-        if (FabricLoader.getInstance().isModLoaded("fabric-networking-api-v1")) {
-            if (FabricLoader.getInstance().isModLoaded("cardinal-components-world")) {
-                WorldSyncCallback.EVENT.register((player, world) -> {
-                    LevelData props = world.getLevelData();
-
-                    for (ComponentKey<?> key : props.asComponentProvider().getComponentContainer().keys()) {
-                        key.syncWith(player, props.asComponentProvider());
-                    }
-                });
+        WorldSyncCallback.EVENT.register((player, world) -> {
+            LevelData props = world.getLevelData();
+            
+            for (ComponentKey<?> key : props.asComponentProvider().getComponentContainer().keys()) {
+                key.syncWith(player, props.asComponentProvider());
             }
-        }
+        });
     }
 
 }

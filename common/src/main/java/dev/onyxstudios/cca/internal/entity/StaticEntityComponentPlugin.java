@@ -97,10 +97,7 @@ public final class StaticEntityComponentPlugin extends LazyDispatcher implements
 
     @Override
     protected void init() {
-        StaticComponentPluginBase.processInitializers(
-            StaticComponentPluginBase.getComponentEntrypoints("cardinal-components-entity", EntityComponentInitializer.class),
-            initializer -> initializer.registerEntityComponentFactories(this)
-        );
+        //NO-OP
     }
 
     @Override

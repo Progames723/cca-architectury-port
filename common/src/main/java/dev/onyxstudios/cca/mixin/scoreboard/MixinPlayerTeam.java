@@ -74,7 +74,7 @@ public abstract class MixinPlayerTeam implements ComponentProvider, PlayerTeamAc
 
     @Override
     public Iterable<ServerPlayer> getRecipientsForComponentSync() {
-        return this.scoreboard.getComponentContainer().getRecipientsForComponentSync();
+        return this.scoreboard.getRecipientsForComponentSync();
     }
 
     @Nullable

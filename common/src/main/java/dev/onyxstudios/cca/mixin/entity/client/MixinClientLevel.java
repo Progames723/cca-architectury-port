@@ -22,7 +22,6 @@
  */
 package dev.onyxstudios.cca.mixin.entity.client;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,11 +34,11 @@ public abstract class MixinClientLevel {
 
     @Inject(method = "tickNonPassenger", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;tick()V", shift = At.Shift.AFTER))
     private void tick(Entity entity, CallbackInfo ci) {
-        ((ComponentProvider) entity).getComponentContainer().tickClientComponents();
+        entity.getComponentContainer().tickClientComponents();
     }
 
     @Inject(method = "tickPassenger", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;rideTick()V", shift = At.Shift.AFTER))
     private void tickRiding(Entity vehicle, Entity passenger, CallbackInfo ci) {
-        ((ComponentProvider) passenger).getComponentContainer().tickClientComponents();
+        passenger.getComponentContainer().tickClientComponents();
     }
 }

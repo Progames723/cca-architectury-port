@@ -25,21 +25,18 @@ package dev.onyxstudios.cca.internal.world;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.world.WorldSyncCallback;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 
 public final class ComponentsWorldNetworking {
     public static final ResourceLocation PACKET_ID = new ResourceLocation("cardinal-components", "world_sync");
 
     public static void init() {
-        if (FabricLoader.getInstance().isModLoaded("fabric-networking-api-v1")) {
-            WorldSyncCallback.EVENT.register((player, world) -> {
-                ComponentProvider provider = (ComponentProvider) world;
-                for (ComponentKey<?> key : provider.getComponentContainer().keys()) {
-                    key.syncWith(player, provider);
-                }
-            });
-        }
+        WorldSyncCallback.EVENT.register((player, world) -> {
+            ComponentProvider provider = (ComponentProvider) world;
+            for (ComponentKey<?> key : provider.getComponentContainer().keys()) {
+                key.syncWith(player, provider);
+            }
+        });
     }
 
 }

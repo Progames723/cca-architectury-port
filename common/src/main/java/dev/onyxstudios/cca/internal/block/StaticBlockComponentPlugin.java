@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
-//TODO
+
 public final class StaticBlockComponentPlugin extends LazyDispatcher implements BlockComponentFactoryRegistry {
     public static final StaticBlockComponentPlugin INSTANCE = new StaticBlockComponentPlugin();
 
@@ -145,10 +145,7 @@ public final class StaticBlockComponentPlugin extends LazyDispatcher implements 
 
     @Override
     protected void init() {
-        StaticComponentPluginBase.processInitializers(
-            StaticComponentPluginBase.getComponentEntrypoints("cardinal-components-block", BlockComponentInitializer.class),
-            initializer -> initializer.registerBlockComponentFactories(this)
-        );
+        //NO-OP
     }
 
     private final class PredicatedComponentFactory<C extends Component> {

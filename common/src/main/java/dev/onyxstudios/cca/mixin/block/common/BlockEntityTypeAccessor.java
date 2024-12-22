@@ -20,29 +20,17 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.onyxstudios.cca.mixin.entity.common;
+package dev.onyxstudios.cca.mixin.block.common;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(Bucketable.class)
-public interface BucketableMixin {
-    @Inject(method = "saveDefaultDataToBucketTag", at = @At("RETURN"))
-    private static void writeComponentsToStack(Mob entity, ItemStack stack, CallbackInfo ci) {
-        CompoundTag nbt = stack.getTag();
-        if (nbt != null) {
-            entity.getComponentContainer().toTag(nbt);
-        }
-    }
+import java.util.Set;
 
-    @Inject(method = "loadDefaultDataFromBucketTag", at = @At("RETURN"))
-    private static void readComponentsFromStack(Mob entity, CompoundTag nbt, CallbackInfo ci) {
-        entity.getComponentContainer().fromTag(nbt);
-    }
+@Mixin(BlockEntityType.class)
+public interface BlockEntityTypeAccessor {
+	@Accessor
+	Set<Block> getValidBlocks();
 }

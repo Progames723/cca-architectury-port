@@ -40,6 +40,6 @@ public abstract class MixinDerivedLevelData implements ComponentProvider {
     @Nonnull
     @Override
     public ComponentContainer getComponentContainer() {
-        return this.wrapped.getComponentContainer().getComponentContainer();
+        return this.wrapped.getComponentContainer();
     }
 }

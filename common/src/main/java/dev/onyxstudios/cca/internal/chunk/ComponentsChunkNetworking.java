@@ -25,7 +25,6 @@ package dev.onyxstudios.cca.internal.chunk;
 import dev.onyxstudios.cca.api.v3.chunk.ChunkSyncCallback;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 
 //TODO
@@ -33,12 +32,10 @@ public final class ComponentsChunkNetworking {
     public static final ResourceLocation PACKET_ID = new ResourceLocation("cardinal-components", "chunk_sync");
 
     public static void init() {
-        if (FabricLoader.getInstance().isModLoaded("fabric-networking-api-v1")) {
-            ChunkSyncCallback.EVENT.register((player, tracked) -> {
-                for (ComponentKey<?> key : tracked.asComponentProvider().getComponentContainer().keys()) {
-                    key.syncWith(player, (ComponentProvider) tracked);
-                }
-            });
-        }
+        ChunkSyncCallback.EVENT.register((player, tracked) -> {
+            for (ComponentKey<?> key : tracked.asComponentProvider().getComponentContainer().keys()) {
+                key.syncWith(player, (ComponentProvider) tracked);
+            }
+        });
     }
 }

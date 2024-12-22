@@ -16,6 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
+      "dev.onyxstudios.cca.fabric.Init"
     ],
     "client": [
     ]

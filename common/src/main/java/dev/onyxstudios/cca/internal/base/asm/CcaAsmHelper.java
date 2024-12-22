@@ -22,6 +22,7 @@
  */
 package dev.onyxstudios.cca.internal.base.asm;
 
+import dev.architectury.event.Event;
 import dev.onyxstudios.cca.api.v3.component.Component;
 import dev.onyxstudios.cca.api.v3.component.ComponentContainer;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
@@ -48,7 +49,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-//TODO
 public final class CcaAsmHelper {
 
     /**

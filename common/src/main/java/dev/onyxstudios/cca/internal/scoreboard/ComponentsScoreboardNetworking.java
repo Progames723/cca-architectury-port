@@ -26,7 +26,6 @@ import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.scoreboard.ScoreboardSyncCallback;
 import dev.onyxstudios.cca.api.v3.scoreboard.TeamAddCallback;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -54,23 +53,21 @@ public final class ComponentsScoreboardNetworking {
     public static final ResourceLocation TEAM_PACKET_ID = new ResourceLocation("cardinal-components", "team_sync");
 
     public static void init() {
-        if (FabricLoader.getInstance().isModLoaded("fabric-networking-api-v1")) {
-            ScoreboardSyncCallback.EVENT.register((player, tracked) -> {
-                for (ComponentKey<?> key : tracked.asComponentProvider().getComponentContainer().keys()) {
-                    key.syncWith(player, tracked.asComponentProvider());
+        ScoreboardSyncCallback.EVENT.register((player, tracked) -> {
+            for (ComponentKey<?> key : tracked.asComponentProvider().getComponentContainer().keys()) {
+                key.syncWith(player, tracked.asComponentProvider());
+            }
+            
+            for (PlayerTeam team : tracked.getPlayerTeams()) {
+                for (ComponentKey<?> key : team.asComponentProvider().getComponentContainer().keys()) {
+                    key.syncWith(player, team.asComponentProvider());
                 }
-
-                for (PlayerTeam team : tracked.getPlayerTeams()) {
-                    for (ComponentKey<?> key : team.asComponentProvider().getComponentContainer().keys()) {
-                        key.syncWith(player, team.asComponentProvider());
-                    }
-                }
-            });
-            TeamAddCallback.EVENT.register((tracked) -> {
-                for (ComponentKey<?> key : tracked.asComponentProvider().getComponentContainer().keys()) {
-                    tracked.syncComponent(key);
-                }
-            });
-        }
+            }
+        });
+        TeamAddCallback.EVENT.register((tracked) -> {
+            for (ComponentKey<?> key : tracked.asComponentProvider().getComponentContainer().keys()) {
+                tracked.syncComponent(key);
+            }
+        });
     }
 }

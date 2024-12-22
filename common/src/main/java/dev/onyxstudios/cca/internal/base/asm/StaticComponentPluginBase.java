@@ -28,10 +28,7 @@ import dev.onyxstudios.cca.api.v3.component.ComponentFactory;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.internal.base.ComponentRegistrationInitializer;
 import dev.onyxstudios.cca.internal.base.LazyDispatcher;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import net.fabricmc.loader.api.metadata.ModMetadata;
+import dev.architectury.event.Event;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -43,7 +40,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Consumer;
 
-//TODO
 public abstract class StaticComponentPluginBase<T, I> extends LazyDispatcher {
     private final ComponentContainer.Factory.Builder<T> containerFactoryBuilder;
 
@@ -143,36 +139,9 @@ public abstract class StaticComponentPluginBase<T, I> extends LazyDispatcher {
 
     @Override
     protected void init() {
-        processInitializers(this.getEntrypoints(), this::dispatchRegistration);
+        //NO-OP
     }
-
-    public static <I> void processInitializers(Collection<EntrypointContainer<I>> entrypoints, Consumer<I> action) {
-        for (EntrypointContainer<I> entrypoint : entrypoints) {
-            try {
-                action.accept(entrypoint.getEntrypoint());
-            } catch (Throwable e) {
-                ModMetadata metadata = entrypoint.getProvider().getMetadata();
-                throw new StaticComponentLoadingException(String.format("Exception while registering static component factories for %s (%s)", metadata.getName(), metadata.getId()), e);
-            }
-        }
-    }
-
-    public static <I extends ComponentRegistrationInitializer> Collection<EntrypointContainer<I>> getComponentEntrypoints(String key, Class<I> type) {
-        Collection<EntrypointContainer<ComponentRegistrationInitializer>> generic = FabricLoader.getInstance().getEntrypointContainers("cardinal-components", ComponentRegistrationInitializer.class);
-        Collection<EntrypointContainer<I>> specific = new ArrayList<>(FabricLoader.getInstance().getEntrypointContainers(key, type));
-        for (EntrypointContainer<ComponentRegistrationInitializer> container : generic) {
-            if (type.isInstance(container.getEntrypoint())) {
-                @SuppressWarnings("unchecked") EntrypointContainer<I> c = (EntrypointContainer<I>) container;
-                specific.add(c);
-            }
-        }
-        return specific;
-    }
-
-    protected abstract Collection<EntrypointContainer<I>> getEntrypoints();
-
-    protected abstract void dispatchRegistration(I entrypoint);
-
+    
     protected <C extends Component> void register(ComponentKey<C> key, ComponentFactory<T, ? extends C> factory) {
         this.containerFactoryBuilder.component(key, factory);
     }

@@ -79,7 +79,7 @@ public abstract class MixinItemStack implements ComponentProvider {
     public ComponentContainer getComponentContainer() {
         if (this.isEmpty()) return EMPTY_COMPONENTS;
         if (this.components == null) {
-            this.components = ((ItemCaller) this.getItem()).cardinal_createComponents((ItemStack) (Object) this);
+            this.components = this.getItem().cardinal_createComponents((ItemStack) (Object) this);
         }
         return this.components;
     }

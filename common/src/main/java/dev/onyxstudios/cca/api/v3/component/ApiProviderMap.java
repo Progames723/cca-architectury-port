@@ -20,29 +20,19 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.onyxstudios.cca.mixin.entity.common;
+package dev.onyxstudios.cca.api.v3.component;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.item.ItemStack;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import dev.onyxstudios.cca.internal.base.ApiProviderHashMap;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
-@Mixin(Bucketable.class)
-public interface BucketableMixin {
-    @Inject(method = "saveDefaultDataToBucketTag", at = @At("RETURN"))
-    private static void writeComponentsToStack(Mob entity, ItemStack stack, CallbackInfo ci) {
-        CompoundTag nbt = stack.getTag();
-        if (nbt != null) {
-            entity.getComponentContainer().toTag(nbt);
-        }
-    }
-
-    @Inject(method = "loadDefaultDataFromBucketTag", at = @At("RETURN"))
-    private static void readComponentsFromStack(Mob entity, CompoundTag nbt, CallbackInfo ci) {
-        entity.getComponentContainer().fromTag(nbt);
-    }
+@ApiStatus.NonExtendable
+public interface ApiProviderMap<K, V> {
+	static <K, V> ApiProviderMap<K, V> create() {
+		return new ApiProviderHashMap<>();
+	}
+	
+	@Nullable V get(K var1);
+	
+	V putIfAbsent(K var1, V var2);
 }

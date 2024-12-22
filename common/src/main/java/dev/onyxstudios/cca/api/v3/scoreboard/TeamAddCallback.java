@@ -22,7 +22,6 @@
  */
 package dev.onyxstudios.cca.api.v3.scoreboard;
 
-
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import net.minecraft.world.scores.PlayerTeam;

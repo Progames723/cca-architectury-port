@@ -30,7 +30,6 @@ import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentInitializer;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentPluginBase;
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
@@ -43,16 +42,6 @@ public final class StaticWorldComponentPlugin extends StaticComponentPluginBase<
 
     private StaticWorldComponentPlugin() {
         super("loading a world", Level.class);
-    }
-
-    @Override
-    protected Collection<EntrypointContainer<WorldComponentInitializer>> getEntrypoints() {
-        return getComponentEntrypoints("cardinal-components-world", WorldComponentInitializer.class);
-    }
-
-    @Override
-    protected void dispatchRegistration(WorldComponentInitializer entrypoint) {
-        entrypoint.registerWorldComponentFactories(this);
     }
 
     @Override

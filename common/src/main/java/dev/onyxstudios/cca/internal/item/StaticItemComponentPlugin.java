@@ -79,10 +79,7 @@ public final class StaticItemComponentPlugin extends LazyDispatcher implements I
 
     @Override
     protected void init() {
-        StaticComponentPluginBase.processInitializers(
-            StaticComponentPluginBase.getComponentEntrypoints("cardinal-components-item", ItemComponentInitializer.class),
-            initializer -> initializer.registerItemComponentFactories(this)
-        );
+        //NO-OP
     }
 
     public <C extends Component> void registerFor(ResourceLocation itemId, ComponentKey<C> type, ComponentFactory<ItemStack, ? extends C> factory) {

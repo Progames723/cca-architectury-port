@@ -36,7 +36,6 @@ import net.minecraft.world.level.Level;
 
 @Mixin(Level.class)
 public abstract class MixinLevel implements ComponentProvider {
-
     @Unique
     protected ComponentContainer components;
 

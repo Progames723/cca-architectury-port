@@ -22,9 +22,9 @@
  */
 package dev.onyxstudios.cca.internal.base;
 
+import dev.architectury.platform.Platform;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentLoadingException;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,14 +40,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
 
-//TODO
 public final class ComponentsInternals {
     public static final Logger LOGGER = LogManager.getLogger("Cardinal Components API");
     private static boolean logDeserializationWarnings = true;
 
     public static void init() {
-        Path path = FabricLoader.getInstance().getConfigDir().resolve("cardinal-components-api.properties");
-        try(Reader reader = Files.newBufferedReader(path)) {
+        Path path = Platform.getConfigFolder().resolve("cardinal-components-api.properties");
+        try (Reader reader = Files.newBufferedReader(path)) {
             Properties cfg = new Properties();
             cfg.load(reader);
             logDeserializationWarnings = Boolean.parseBoolean(cfg.getProperty("log-deserialization-warnings", "true"));

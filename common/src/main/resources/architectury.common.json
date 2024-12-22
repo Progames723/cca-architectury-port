@@ -1,0 +1,18 @@
+{
+  "injected_interfaces": {
+    "net/minecraft/class_2586":           ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_2791":           ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_638$class_5271": ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_27":             ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_2812":           ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_1297":           ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_2821":           ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_1799":           ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_1937":           ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_268":            ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_31":             ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_5217":           ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_269":            ["dev/onyxstudios/cca/api/v3/component/ComponentProvider"],
+    "net/minecraft/class_1792":           ["dev/onyxstudios/cca/internal/item/ItemCaller"]
+  }
+}
