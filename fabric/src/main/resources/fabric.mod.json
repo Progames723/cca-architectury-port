@@ -6,7 +6,13 @@
   "description": "yes this is literally a port",
   "authors": [
     "Progames723",
-    "and the original developers!"
+    {
+      "name": "UpcraftLP",
+      "contact": {
+        "homepage": "https://twitter.com/UpcraftLP"
+      }
+    },
+    "Pyrofab"
   ],
   "contact": {
     "homepage": ""
@@ -17,8 +23,6 @@
   "entrypoints": {
     "main": [
       "dev.onyxstudios.cca.fabric.Init"
-    ],
-    "client": [
     ]
   },
   "mixins": [
