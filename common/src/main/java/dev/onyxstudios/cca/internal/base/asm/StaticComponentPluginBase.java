@@ -26,7 +26,9 @@ import dev.onyxstudios.cca.api.v3.component.Component;
 import dev.onyxstudios.cca.api.v3.component.ComponentContainer;
 import dev.onyxstudios.cca.api.v3.component.ComponentFactory;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
+import dev.onyxstudios.cca.internal.base.CcaEntrypoint;
 import dev.onyxstudios.cca.internal.base.ComponentRegistrationInitializer;
+import dev.onyxstudios.cca.internal.base.ComponentsInternals;
 import dev.onyxstudios.cca.internal.base.LazyDispatcher;
 import dev.architectury.event.Event;
 import org.objectweb.asm.MethodVisitor;
@@ -37,10 +39,13 @@ import org.objectweb.asm.tree.ClassNode;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class StaticComponentPluginBase<T, I> extends LazyDispatcher {
+public abstract class StaticComponentPluginBase<T, I extends ComponentRegistrationInitializer> extends LazyDispatcher {
     private final ComponentContainer.Factory.Builder<T> containerFactoryBuilder;
 
     protected StaticComponentPluginBase(String likelyInitTrigger, Class<T> providerClass) {
@@ -139,9 +144,24 @@ public abstract class StaticComponentPluginBase<T, I> extends LazyDispatcher {
 
     @Override
     protected void init() {
-        //NO-OP
+        ComponentsInternals.LOGGER.info("StaticComponentPluginBase#init() call! class: {}", this.getClass());
+        processInitializers(this.getEntrypoints(), this::dispatchRegistration);
     }
-    
+
+    public static <I extends ComponentRegistrationInitializer> void processInitializers(Collection<CcaEntrypoint<I>> entrypoints, Consumer<I> action) {
+        for (CcaEntrypoint<I> entrypoint : entrypoints) {
+            try {
+                action.accept(entrypoint.getInstance());
+            } catch (Throwable e) {
+                throw new StaticComponentLoadingException(String.format("Exception while registering static component factories for %s", entrypoint.getInstance().getClass()), e);
+            }
+        }
+    }
+
+    protected abstract Collection<CcaEntrypoint<I>> getEntrypoints();
+
+    protected abstract void dispatchRegistration(I entrypoint);
+
     protected <C extends Component> void register(ComponentKey<C> key, ComponentFactory<T, ? extends C> factory) {
         this.containerFactoryBuilder.component(key, factory);
     }

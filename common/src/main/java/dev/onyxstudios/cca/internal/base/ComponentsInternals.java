@@ -41,7 +41,8 @@ import java.util.Collection;
 import java.util.Properties;
 
 public final class ComponentsInternals {
-    public static final Logger LOGGER = LogManager.getLogger("Cardinal Components API");
+    public static final Logger LOGGER = LogManager.getLogger("Cardinal Components API(Architectury port)");
+    public static final String MOD_ID = "cca-architectury-port";
     private static boolean logDeserializationWarnings = true;
 
     public static void init() {

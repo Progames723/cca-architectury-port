@@ -85,9 +85,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 			instance = provider.find(world, pos, state, blockEntity, context);
 		}
 		
-		if (instance != null) {
-			return instance;
-		} else {
+		if (instance == null) {
 			Iterator<BlockApiProvider<A, C>> var8 = this.fallbackProviders.iterator();
 			
 			do {
@@ -95,12 +93,12 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 					return null;
 				}
 				
-				BlockApiLookup.BlockApiProvider<A, C> fallbackProvider = var8.next();
+				BlockApiProvider<A, C> fallbackProvider = var8.next();
 				instance = fallbackProvider.find(world, pos, state, blockEntity, context);
-			} while(instance == null);
+			} while (instance == null);
 			
-			return instance;
 		}
+		return instance;
 	}
 	
 	public void registerSelf(BlockEntityType<?>... blockEntityTypes) {

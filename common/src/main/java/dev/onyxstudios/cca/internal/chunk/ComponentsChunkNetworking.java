@@ -27,7 +27,6 @@ import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import net.minecraft.resources.ResourceLocation;
 
-//TODO
 public final class ComponentsChunkNetworking {
     public static final ResourceLocation PACKET_ID = new ResourceLocation("cardinal-components", "chunk_sync");
 

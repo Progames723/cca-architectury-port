@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "cca-architectury-port",
+  "id": "cca_architectury_port",
   "version": "${version}",
   "name": "Cardinal Components API(Architectury port)",
   "description": "yes this is literally a port",
@@ -31,7 +31,14 @@
     "fabric-api": "*",
     "architectury": ">=9.1.12"
   },
-  "suggests": {
-    "another-mod": "*"
+  "breaks": {
+    "cardinal-components-base": "*",
+    "cardinal-components-block": "*",
+    "cardinal-components-chunk": "*",
+    "cardinal-components-entity": "*",
+    "cardinal-components-item": "*",
+    "cardinal-components-level": "*",
+    "cardinal-components-scoreboard": "*",
+    "cardinal-components-world": "*"
   }
 }

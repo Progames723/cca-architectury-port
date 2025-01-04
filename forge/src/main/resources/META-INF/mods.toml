@@ -4,7 +4,7 @@ loaderVersion = "[3,)"
 license = "MIT"
 
 [[mods]]
-modId = "cca-architectury-port"
+modId = "cca_architectury_port"
 version = "${version}"
 displayName = "Cardinal Components API(Architectury port)"
 authors = "Progames723 and the original developers!"
@@ -13,21 +13,21 @@ yes this is literally a port
 '''
 logoFile = "assets/icon.png"
 
-[[dependencies.cca-architectury-port]]
+[[dependencies.cca_architectury_port]]
 modId = "forge"
 mandatory = true
 versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.cca-architectury-port]]
+[[dependencies.cca_architectury_port]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.cca-architectury-port]]
+[[dependencies.cca_architectury_port]]
 modId = "architectury"
 mandatory = true
 versionRange = "[9.1.12,)"

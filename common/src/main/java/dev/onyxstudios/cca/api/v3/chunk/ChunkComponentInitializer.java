@@ -23,6 +23,7 @@
 package dev.onyxstudios.cca.api.v3.chunk;
 
 import dev.onyxstudios.cca.internal.base.ComponentRegistrationInitializer;
+import dev.onyxstudios.cca.internal.chunk.StaticChunkComponentPlugin;
 import net.minecraft.world.level.chunk.ChunkAccess;
 
 /**

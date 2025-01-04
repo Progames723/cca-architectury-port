@@ -26,4 +26,5 @@ package dev.onyxstudios.cca.internal.base;
  * Internal marker for {@code "cardinal-components"} entrypoints
  */
 public interface ComponentRegistrationInitializer {
+
 }

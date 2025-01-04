@@ -20,7 +20,7 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
  * OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.onyxstudios.cca.internal;
+package dev.onyxstudios.cca.internal.block;
 
 import dev.onyxstudios.cca.api.v3.block.BlockEntitySyncAroundCallback;
 import dev.onyxstudios.cca.api.v3.block.BlockEntitySyncCallback;
@@ -48,10 +48,8 @@ public class CardinalComponentsBlock {
 
     public static void init() {
         BlockEntitySyncCallback.EVENT.register((player, tracked) -> {
-            ComponentProvider provider = (ComponentProvider) tracked;
-            
-            for (ComponentKey<?> key : provider.getComponentContainer().keys()) {
-                key.syncWith(player, provider);
+	        for (ComponentKey<?> key : ((ComponentProvider) tracked).getComponentContainer().keys()) {
+                key.syncWith(player, (ComponentProvider) tracked);
             }
         });
         BlockEntitySyncAroundCallback.EVENT.register(tracked -> {

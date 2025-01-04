@@ -55,6 +55,10 @@ public abstract class LazyDispatcher {
             }
         }
     }
+    
+    protected State getState() {
+        return state;
+    }
 
     protected void onCircularLoading() {
         throw new IllegalStateException("Circular loading issue, a mod is probably " + this.likelyInitTrigger + " in the wrong place");
@@ -77,7 +81,7 @@ public abstract class LazyDispatcher {
         // NO-OP
     }
 
-    enum State {
+    protected enum State {
         UNLOADED, LOADING, LOADED, ERRED
     }
 }

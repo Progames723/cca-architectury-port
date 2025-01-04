@@ -27,7 +27,7 @@ import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.sync.ComponentPacketWriter;
-import dev.onyxstudios.cca.internal.CardinalComponentsBlock;
+import dev.onyxstudios.cca.internal.block.CardinalComponentsBlock;
 import dev.onyxstudios.cca.internal.block.CardinalBlockInternals;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;

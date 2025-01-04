@@ -27,6 +27,8 @@ import dev.onyxstudios.cca.api.v3.component.*;
 import dev.onyxstudios.cca.api.v3.item.ItemComponent;
 import dev.onyxstudios.cca.api.v3.item.ItemComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.item.ItemComponentInitializer;
+import dev.onyxstudios.cca.internal.base.CcaEntrypoint;
+import dev.onyxstudios.cca.internal.base.ComponentsInternals;
 import dev.onyxstudios.cca.internal.base.LazyDispatcher;
 import dev.onyxstudios.cca.internal.base.asm.CcaAsmHelper;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentPluginBase;
@@ -79,7 +81,11 @@ public final class StaticItemComponentPlugin extends LazyDispatcher implements I
 
     @Override
     protected void init() {
-        //NO-OP
+        ComponentsInternals.LOGGER.info("StaticItemComponentPlugin#init() call!");
+        StaticComponentPluginBase.processInitializers(
+            CcaEntrypoint.getEntrypoints(ItemComponentInitializer.class),
+            initializer -> initializer.registerItemComponentFactories(this)
+        );
     }
 
     public <C extends Component> void registerFor(ResourceLocation itemId, ComponentKey<C> type, ComponentFactory<ItemStack, ? extends C> factory) {

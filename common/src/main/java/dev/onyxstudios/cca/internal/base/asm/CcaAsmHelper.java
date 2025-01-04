@@ -33,7 +33,11 @@ import dev.onyxstudios.cca.internal.base.AbstractComponentContainer;
 import dev.onyxstudios.cca.internal.base.QualifiedComponentFactory;
 import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import net.minecraft.resources.ResourceLocation;
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.util.CheckClassAdapter;
 
@@ -51,6 +55,10 @@ import java.util.Set;
 
 public final class CcaAsmHelper {
 
+    static {
+        System.setProperty("cca.debug.asm", "true");
+    }
+    
     /**
      * If {@code true}, any class generated through {@link #generateClass(ClassWriter, String)} will
      * be checked and written to disk. Highly recommended when editing methods in this class.
@@ -62,7 +70,7 @@ public final class CcaAsmHelper {
     public static final String COMPONENT_CONTAINER = Type.getInternalName(ComponentContainer.class);
     public static final String COMPONENT_TYPE = Type.getInternalName(ComponentKey.class);
     public static final String DYNAMIC_COMPONENT_CONTAINER_IMPL = Type.getInternalName(AbstractComponentContainer.class);
-    public static final String IDENTIFIER = ResourceLocation.class.getName();
+    public static final String IDENTIFIER = Type.getInternalName(ResourceLocation.class);
     public static final String EVENT = Type.getInternalName(Event.class);
     // generated references
     public static final String STATIC_COMPONENT_CONTAINER = "dev/onyxstudios/cca/_generated_/GeneratedComponentContainer";

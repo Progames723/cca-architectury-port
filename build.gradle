@@ -30,6 +30,7 @@ subprojects {
 		// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 		// for more information about repositories.
 		maven { url "https://maven.parchmentmc.org" }
+		mavenCentral()
 	}
 
 	loom {
@@ -38,6 +39,8 @@ subprojects {
 
 	dependencies {
 		minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+
+		implementation "io.github.classgraph:classgraph:4.8.179"
 
 		mappings loom.layered() {
 			officialMojangMappings()

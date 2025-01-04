@@ -23,6 +23,8 @@
 package dev.onyxstudios.cca.api.v3.scoreboard;
 
 import dev.onyxstudios.cca.internal.base.ComponentRegistrationInitializer;
+import dev.onyxstudios.cca.internal.block.StaticBlockComponentPlugin;
+import dev.onyxstudios.cca.internal.scoreboard.StaticScoreboardComponentPlugin;
 
 /**
  * Entrypoint getting invoked to register <em>static</em> team component factories.

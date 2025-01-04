@@ -29,10 +29,12 @@ import dev.onyxstudios.cca.api.v3.component.ComponentFactory;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.level.LevelComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.level.LevelComponentInitializer;
+import dev.onyxstudios.cca.internal.base.CcaEntrypoint;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentPluginBase;
 import net.minecraft.world.level.storage.LevelData;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
 public final class StaticLevelComponentPlugin extends StaticComponentPluginBase<LevelData, LevelComponentInitializer> implements LevelComponentFactoryRegistry {
@@ -47,7 +49,17 @@ public final class StaticLevelComponentPlugin extends StaticComponentPluginBase<
     private StaticLevelComponentPlugin() {
         super("loading a world save", LevelData.class);
     }
-
+    
+    @Override
+    protected Collection<CcaEntrypoint<LevelComponentInitializer>> getEntrypoints() {
+        return CcaEntrypoint.getEntrypoints(LevelComponentInitializer.class);
+    }
+    
+    @Override
+    protected void dispatchRegistration(LevelComponentInitializer entrypoint) {
+        entrypoint.registerLevelComponentFactories(this);
+    }
+    
     @Override
     public <C extends Component> void register(ComponentKey<C> type, ComponentFactory<LevelData, ? extends C> factory) {
         this.checkLoading(LevelComponentFactoryRegistry.class, "register");

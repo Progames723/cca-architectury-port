@@ -44,7 +44,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinItemStack implements ComponentProvider {
     @Unique
     private static final ComponentContainer EMPTY_COMPONENTS = ComponentContainer.EMPTY;
-
+    
     @Unique
     private @Nullable ComponentContainer components;
 
@@ -79,7 +79,7 @@ public abstract class MixinItemStack implements ComponentProvider {
     public ComponentContainer getComponentContainer() {
         if (this.isEmpty()) return EMPTY_COMPONENTS;
         if (this.components == null) {
-            this.components = this.getItem().cardinal_createComponents((ItemStack) (Object) this);
+            this.components = ((ItemCaller) this.getItem()).cardinal_createComponents((ItemStack) (Object) this);
         }
         return this.components;
     }

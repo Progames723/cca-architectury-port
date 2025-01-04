@@ -23,6 +23,8 @@
 package dev.onyxstudios.cca.api.v3.level;
 
 import dev.onyxstudios.cca.internal.base.ComponentRegistrationInitializer;
+import dev.onyxstudios.cca.internal.block.StaticBlockComponentPlugin;
+import dev.onyxstudios.cca.internal.level.StaticLevelComponentPlugin;
 import net.minecraft.world.level.storage.LevelData;
 
 /**

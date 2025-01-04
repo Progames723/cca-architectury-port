@@ -59,7 +59,7 @@ public final class ComponentRegistryImpl implements ComponentRegistryV3 {
             Class<? extends ComponentKey<?>> generated = CcaBootstrap.INSTANCE.getGeneratedComponentTypeClass(componentId);
 
             if (generated == null) {
-                throw new IllegalStateException(componentId + " was not registered through mod metadata or plugin");
+                throw new IllegalStateException(componentId + " was not registered");
             }
 
             ComponentKey<T> registered = this.instantiateStaticType(generated, componentId, componentClass);

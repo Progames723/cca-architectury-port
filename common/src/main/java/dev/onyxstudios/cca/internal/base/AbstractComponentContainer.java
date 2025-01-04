@@ -22,17 +22,23 @@
  */
 package dev.onyxstudios.cca.internal.base;
 
-import dev.onyxstudios.cca.api.v3.component.*;
+import dev.onyxstudios.cca.api.v3.component.Component;
+import dev.onyxstudios.cca.api.v3.component.ComponentContainer;
+import dev.onyxstudios.cca.api.v3.component.ComponentKey;
+import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
+import dev.onyxstudios.cca.api.v3.component.CopyableComponent;
+import dev.onyxstudios.cca.api.v3.item.CcaNbtType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import org.intellij.lang.annotations.Identifier;
 
 import java.util.Iterator;
 
 /**
  * Implementing class for {@link ComponentContainer}.
  */
-public abstract class AbstractComponentContainer implements ComponentContainer {//TODO
+public abstract class AbstractComponentContainer implements ComponentContainer {
 
     public static final String NBT_KEY = "cardinal_components";
 
@@ -61,15 +67,15 @@ public abstract class AbstractComponentContainer implements ComponentContainer {
      *
      * @implSpec This implementation first checks if {@code tag} has a tag list
      * mapped to the "cardinal_components" key; if not it returns immediately.
-     * Then it iterates over the list's tags, casts them to {@code NbtCompound},
+     * Then it iterates over the list's tags, casts them to {@code CompoundTag},
      * and passes them to the associated component's {@code fromTag} method.
      * If this container lacks a corresponding component for a serialized component
      * type, the component tag is skipped.
      */
     @Override
     public void fromTag(CompoundTag tag) {
-        if(tag.contains(NBT_KEY, 9/* list */)) {
-            ListTag componentList = tag.getList(NBT_KEY, 10 /* compound */);
+        if(tag.contains(NBT_KEY, CcaNbtType.LIST.getId())) {
+            ListTag componentList = tag.getList(NBT_KEY, CcaNbtType.COMPOUND.getId());
             for (int i = 0; i < componentList.size(); i++) {
                 CompoundTag nbt = componentList.getCompound(i);
                 ComponentKey<?> type = ComponentRegistry.get(new ResourceLocation(nbt.getString("componentId")));
@@ -80,13 +86,13 @@ public abstract class AbstractComponentContainer implements ComponentContainer {
                     }
                 }
             }
-        } else if (tag.contains("cardinal_components", 10 /* compound */)) {
+        } else if (tag.contains("cardinal_components", CcaNbtType.COMPOUND.getId())) {
             CompoundTag componentMap = tag.getCompound(NBT_KEY);
 
             for (ComponentKey<?> key : this.keys()) {
                 String keyId = key.getId().toString();
 
-                if (componentMap.contains(keyId, 10 /* compound */)) {
+                if (componentMap.contains(keyId, CcaNbtType.COMPOUND.getId())) {
                     Component component = key.getInternal(this);
                     assert component != null;
                     component.readFromNbt(componentMap.getCompound(keyId));
@@ -105,7 +111,7 @@ public abstract class AbstractComponentContainer implements ComponentContainer {
      * returns immediately. Then, it iterates over this container's mappings, and creates
      * a compound tag for each component. The tag is then passed to the component's
      * {@link Component#writeToNbt(CompoundTag)} method. Every such serialized component is appended
-     * to a {@code NbtCompound}, using the component type's identifier as the key.
+     * to a {@code CompoundTag}, using the component type's identifier as the key.
      * The serialized map is finally appended to the passed in tag using the "cardinal_components" key.
      */
     @Override

@@ -30,6 +30,8 @@ import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import dev.onyxstudios.cca.api.v3.entity.PlayerComponent;
 import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
+import dev.onyxstudios.cca.internal.base.CcaEntrypoint;
+import dev.onyxstudios.cca.internal.base.ComponentsInternals;
 import dev.onyxstudios.cca.internal.base.LazyDispatcher;
 import dev.onyxstudios.cca.internal.base.QualifiedComponentFactory;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentLoadingException;
@@ -41,7 +43,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
 
-//TODO
 public final class StaticEntityComponentPlugin extends LazyDispatcher implements EntityComponentFactoryRegistry {
     public static final StaticEntityComponentPlugin INSTANCE = new StaticEntityComponentPlugin();
 
@@ -97,7 +98,11 @@ public final class StaticEntityComponentPlugin extends LazyDispatcher implements
 
     @Override
     protected void init() {
-        //NO-OP
+        ComponentsInternals.LOGGER.info("StaticEntityComponentPlugin#init() call! Factories: {}, {}", dynamicFactories, componentFactories);
+        StaticComponentPluginBase.processInitializers(
+            CcaEntrypoint.getEntrypoints(EntityComponentInitializer.class),
+            initializer -> initializer.registerEntityComponentFactories(this)
+        );
     }
 
     @Override

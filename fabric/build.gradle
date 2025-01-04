@@ -31,6 +31,8 @@ dependencies {
 
 	modApi "dev.architectury:architectury-fabric:$arch_api_version"
 
+	include "io.github.classgraph:classgraph:4.8.179"
+
 	common(project(path: ':common', configuration: 'namedElements')) { transitive false }
 	shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }

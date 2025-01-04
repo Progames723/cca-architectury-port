@@ -30,6 +30,8 @@ import dev.onyxstudios.cca.api.v3.component.ComponentFactory;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.tick.ClientTickingComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
+import dev.onyxstudios.cca.internal.base.CcaEntrypoint;
+import dev.onyxstudios.cca.internal.base.ComponentsInternals;
 import dev.onyxstudios.cca.internal.base.LazyDispatcher;
 import dev.onyxstudios.cca.internal.base.QualifiedComponentFactory;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentLoadingException;
@@ -145,7 +147,11 @@ public final class StaticBlockComponentPlugin extends LazyDispatcher implements 
 
     @Override
     protected void init() {
-        //NO-OP
+        ComponentsInternals.LOGGER.info("StaticBlockComponentPlugin#init() call!");
+        StaticComponentPluginBase.processInitializers(
+            CcaEntrypoint.getEntrypoints(BlockComponentInitializer.class),
+            initializer -> initializer.registerBlockComponentFactories(this)
+        );
     }
 
     private final class PredicatedComponentFactory<C extends Component> {

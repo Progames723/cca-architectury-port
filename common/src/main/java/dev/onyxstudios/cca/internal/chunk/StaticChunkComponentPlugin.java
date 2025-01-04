@@ -29,12 +29,14 @@ import dev.onyxstudios.cca.api.v3.component.Component;
 import dev.onyxstudios.cca.api.v3.component.ComponentContainer;
 import dev.onyxstudios.cca.api.v3.component.ComponentFactory;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
+import dev.onyxstudios.cca.internal.base.CcaEntrypoint;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentPluginBase;
 import net.minecraft.world.level.chunk.ChunkAccess;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
-//TODO
+
 public final class StaticChunkComponentPlugin extends StaticComponentPluginBase<ChunkAccess, ChunkComponentInitializer> implements ChunkComponentFactoryRegistry {
     public static final StaticChunkComponentPlugin INSTANCE = new StaticChunkComponentPlugin();
     private static final Supplier<ComponentContainer.Factory<ChunkAccess>> componentsContainerFactory
@@ -47,7 +49,17 @@ public final class StaticChunkComponentPlugin extends StaticComponentPluginBase<
     private StaticChunkComponentPlugin() {
         super("loading a chunk", ChunkAccess.class);
     }
-
+    
+    @Override
+    protected Collection<CcaEntrypoint<ChunkComponentInitializer>> getEntrypoints() {
+        return CcaEntrypoint.getEntrypoints(ChunkComponentInitializer.class);
+    }
+    
+    @Override
+    protected void dispatchRegistration(ChunkComponentInitializer entrypoint) {
+        entrypoint.registerChunkComponentFactories(this);
+    }
+    
     @Override
     public <C extends Component> void register(ComponentKey<C> type, ComponentFactory<ChunkAccess, ? extends C> factory) {
         this.register(type, type.getComponentClass(), factory);

@@ -30,6 +30,8 @@ import dev.onyxstudios.cca.api.v3.scoreboard.ScoreboardComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.scoreboard.ScoreboardComponentFactoryV2;
 import dev.onyxstudios.cca.api.v3.scoreboard.ScoreboardComponentInitializer;
 import dev.onyxstudios.cca.api.v3.scoreboard.TeamComponentFactoryV2;
+import dev.onyxstudios.cca.internal.base.CcaEntrypoint;
+import dev.onyxstudios.cca.internal.base.ComponentsInternals;
 import dev.onyxstudios.cca.internal.base.GenericContainerBuilder;
 import dev.onyxstudios.cca.internal.base.LazyDispatcher;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentPluginBase;
@@ -79,8 +81,9 @@ public final class StaticScoreboardComponentPlugin extends LazyDispatcher implem
 
     @Override
     protected void init() {
+        ComponentsInternals.LOGGER.info("StaticScoreboardComponentPlugin#init() call!");
         StaticComponentPluginBase.processInitializers(
-            StaticComponentPluginBase.getComponentEntrypoints("cardinal-components-scoreboard", ScoreboardComponentInitializer.class),
+            CcaEntrypoint.getEntrypoints(ScoreboardComponentInitializer.class),
             initializer -> initializer.registerScoreboardComponentFactories(this)
         );
     }

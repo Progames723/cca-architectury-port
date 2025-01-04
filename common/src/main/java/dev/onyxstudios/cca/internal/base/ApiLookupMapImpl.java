@@ -30,9 +30,9 @@ import java.util.*;
 
 public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
 	private final Map<ResourceLocation, StoredLookup<L>> lookups = new HashMap<>();
-	private final ApiLookupMap.LookupConstructor<L> lookupConstructor;
+	private final LookupConstructor<L> lookupConstructor;
 	
-	public ApiLookupMapImpl(ApiLookupMap.LookupConstructor<L> lookupConstructor) {
+	public ApiLookupMapImpl(LookupConstructor<L> lookupConstructor) {
 		this.lookupConstructor = lookupConstructor;
 	}
 	

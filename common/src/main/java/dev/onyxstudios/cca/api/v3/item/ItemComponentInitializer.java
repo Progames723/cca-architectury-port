@@ -23,6 +23,7 @@
 package dev.onyxstudios.cca.api.v3.item;
 
 import dev.onyxstudios.cca.internal.base.ComponentRegistrationInitializer;
+import dev.onyxstudios.cca.internal.item.StaticItemComponentPlugin;
 import net.minecraft.world.item.ItemStack;
 
 /**

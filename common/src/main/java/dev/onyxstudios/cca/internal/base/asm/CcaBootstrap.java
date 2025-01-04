@@ -23,16 +23,26 @@
 package dev.onyxstudios.cca.internal.base.asm;
 
 import com.google.common.annotations.VisibleForTesting;
-import dev.onyxstudios.cca.api.v3.component.*;
-import dev.onyxstudios.cca.internal.base.ComponentRegistryImpl;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
+import dev.onyxstudios.cca.api.v3.component.ComponentKey;
+import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
+import dev.onyxstudios.cca.api.v3.component.StaticComponentInitializer;
+import dev.onyxstudios.cca.internal.base.CcaEntrypoint;
+import dev.onyxstudios.cca.internal.base.ComponentsInternals;
 import dev.onyxstudios.cca.internal.base.LazyDispatcher;
-import dev.onyxstudios.cca.internal.block.StaticBlockComponentPlugin;
-import dev.onyxstudios.cca.internal.chunk.StaticChunkComponentPlugin;
-import dev.onyxstudios.cca.internal.entity.StaticEntityComponentPlugin;
-import dev.onyxstudios.cca.internal.item.StaticItemComponentPlugin;
-import dev.onyxstudios.cca.internal.level.StaticLevelComponentPlugin;
-import dev.onyxstudios.cca.internal.scoreboard.StaticScoreboardComponentPlugin;
-import dev.onyxstudios.cca.internal.world.StaticWorldComponentPlugin;
+import dev.onyxstudios.cca.internal.block.CardinalComponentsBlock;
+import dev.onyxstudios.cca.internal.block.CcaBlockClientNw;
+import dev.onyxstudios.cca.internal.chunk.CcaChunkClientNw;
+import dev.onyxstudios.cca.internal.chunk.ComponentsChunkNetworking;
+import dev.onyxstudios.cca.internal.entity.CardinalComponentsEntity;
+import dev.onyxstudios.cca.internal.entity.CcaEntityClientNw;
+import dev.onyxstudios.cca.internal.level.CcaLevelClientNw;
+import dev.onyxstudios.cca.internal.level.ComponentsLevelNetworking;
+import dev.onyxstudios.cca.internal.scoreboard.CcaScoreboardClientNw;
+import dev.onyxstudios.cca.internal.scoreboard.ComponentsScoreboardNetworking;
+import dev.onyxstudios.cca.internal.world.CcaWorldClientNw;
+import dev.onyxstudios.cca.internal.world.ComponentsWorldNetworking;
 import net.minecraft.resources.ResourceLocation;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -42,7 +52,13 @@ import org.objectweb.asm.tree.ClassNode;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public final class CcaBootstrap extends LazyDispatcher {
 
@@ -51,6 +67,11 @@ public final class CcaBootstrap extends LazyDispatcher {
     public static final String STATIC_INIT_ENTRYPOINT = "cardinal-components:static-init";
     public static final CcaBootstrap INSTANCE = new CcaBootstrap();
 
+    private final Collection<CcaEntrypoint<StaticComponentInitializer>> staticComponentInitializers = new ArrayList<>();
+    private boolean initializersModified = false;
+
+    private final Collection<ResourceLocation> registeredComponents = new ArrayList<>();
+    
     @VisibleForTesting Collection<ResourceLocation> additionalComponentIds = new ArrayList<>();
     private Map<ResourceLocation, Class<? extends ComponentKey<?>>> generatedComponentTypes = new HashMap<>();
 
@@ -62,6 +83,14 @@ public final class CcaBootstrap extends LazyDispatcher {
         if (this.requiresInitialization()) return false;
         return this.generatedComponentTypes.containsValue(keyClass);
     }
+    
+    public void registerComponent(ResourceLocation component) {
+        if (getState() == State.LOADING) {
+            registeredComponents.add(component);
+        } else {
+            throw new StaticComponentLoadingException("Cannot register a component when not loading!");
+        }
+    }
 
     @Nullable
     public Class<? extends ComponentKey<?>> getGeneratedComponentTypeClass(ResourceLocation componentId) {
@@ -70,23 +99,43 @@ public final class CcaBootstrap extends LazyDispatcher {
         return this.generatedComponentTypes.get(componentId);
     }
 
+    private void addStaticComponentInitializerEntrypoint() {
+        if (!initializersModified) {
+            initializersModified = true;
+            staticComponentInitializers.addAll(CcaEntrypoint.getEntrypoints(StaticComponentInitializer.class));
+        }
+    }
+    
     @Override
     protected void init() {
-        StaticComponentRegistrationEvents.REGISTER_BLOCK_ENTITY.invoker().register(StaticBlockComponentPlugin.INSTANCE);
-        StaticComponentRegistrationEvents.REGISTER_CHUNK.invoker().register(StaticChunkComponentPlugin.INSTANCE);
-        StaticComponentRegistrationEvents.REGISTER_ENTITY.invoker().register(StaticEntityComponentPlugin.INSTANCE);
-        StaticComponentRegistrationEvents.REGISTER_ITEM.invoker().register(StaticItemComponentPlugin.INSTANCE);
-        StaticComponentRegistrationEvents.REGISTER_LEVEL.invoker().register(StaticLevelComponentPlugin.INSTANCE);
-        StaticComponentRegistrationEvents.REGISTER_SCOREBOARD.invoker().register(StaticScoreboardComponentPlugin.INSTANCE);
-        StaticComponentRegistrationEvents.REGISTER_WORLD.invoker().register(StaticWorldComponentPlugin.INSTANCE);
-        
+        ComponentsInternals.LOGGER.info("CcaBootstrap#init() call!");
+        addStaticComponentInitializerEntrypoint();
+        //massive init block
+        if (Platform.getEnvironment() == Env.CLIENT) {
+            CcaBlockClientNw.initClient();
+            CcaChunkClientNw.initClient();
+            CcaEntityClientNw.initClient();
+            CcaLevelClientNw.initClient();
+            CcaScoreboardClientNw.initClient();
+            CcaWorldClientNw.initClient();
+        }
+        CardinalComponentsBlock.init();
+        ComponentsChunkNetworking.init();
+        CardinalComponentsEntity.init();
+        ComponentsLevelNetworking.init();
+        ComponentsScoreboardNetworking.init();
+        ComponentsWorldNetworking.init();
         try {
             Set<ResourceLocation> staticComponentTypes = new TreeSet<>(Comparator.comparing(ResourceLocation::toString));
-            
-            ComponentRegistryImpl.INSTANCE.stream().forEach(componentKey -> {
-                staticComponentTypes.add(componentKey.getId());
-            });
-            
+
+            for (CcaEntrypoint<StaticComponentInitializer> staticInitializer : this.staticComponentInitializers) {
+                try {
+                    staticComponentTypes.addAll(staticInitializer.getInstance().getSupportedComponentKeys());
+                } catch (Throwable e) {
+                    throw new StaticComponentLoadingException("Error while loading static components", e);
+                }
+            }
+
             staticComponentTypes.addAll(this.additionalComponentIds);
 
             this.spinStaticContainerItf(staticComponentTypes);
@@ -98,7 +147,9 @@ public final class CcaBootstrap extends LazyDispatcher {
 
     @Override
     protected void postInit() {
-        StaticComponentRegistrationPostInitCallback.EVENT.invoker().postInit();
+        for (CcaEntrypoint<StaticComponentInitializer> staticInitializer : this.staticComponentInitializers) {
+            staticInitializer.getInstance().finalizeStaticBootstrap();
+        }
     }
 
     /**

@@ -22,6 +22,7 @@
  */
 package dev.onyxstudios.cca.api.v3.component;
 
+import dev.onyxstudios.cca.internal.base.ComponentRegistrationInitializer;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
@@ -40,14 +41,14 @@ import java.util.Collections;
  * and runs for any environment. It usually executes right before the first {@link ComponentKey}
  * is created, but can be triggered at any time by another module.
  */
-public interface StaticComponentInitializer {
+public interface StaticComponentInitializer extends ComponentRegistrationInitializer {
     /**
      * @return the identifiers of the {@link ComponentKey}s this initializer supports
      */
     default Collection<ResourceLocation> getSupportedComponentKeys() {
         return Collections.emptySet();
     }
-
+    
     /**
      * Called when static component bootstrap is finished.
      *

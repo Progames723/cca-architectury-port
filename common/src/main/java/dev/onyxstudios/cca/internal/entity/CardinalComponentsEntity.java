@@ -39,7 +39,6 @@ import net.minecraft.world.level.GameRules;
 
 import java.util.Set;
 
-//TODO
 public final class CardinalComponentsEntity {
     /**
      * {@link ClientboundCustomPayloadPacket} channel for default entity component synchronization.

@@ -28,8 +28,13 @@ import dev.onyxstudios.cca.api.v3.component.Component;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.internal.base.asm.StaticComponentLoadingException;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class QualifiedComponentFactory<I> {
@@ -64,12 +69,12 @@ public final class QualifiedComponentFactory<I> {
         factories.values().forEach(f -> f.sortingState = SortingState.UNSORTED);
         // If there is no explicit dependency, we want everything to stay in the same order
         // We are *prepending* visited nodes to the output list, so we need to visit in reverse order
-        List<Entry<ComponentKey<?>, QualifiedComponentFactory<I>>> in = Lists.reverse(new ArrayList<>(factories.entrySet()));
-        Deque<Entry<ComponentKey<?>, QualifiedComponentFactory<I>>> out = new ArrayDeque<>();
+        List<Map.Entry<ComponentKey<?>, QualifiedComponentFactory<I>>> in = Lists.reverse(new ArrayList<>(factories.entrySet()));
+        Deque<Map.Entry<ComponentKey<?>, QualifiedComponentFactory<I>>> out = new ArrayDeque<>();
         while (!in.isEmpty()) { // can't use an iterator because sweet CME's
             visitComponentNode(in, in.get(0), out);
         }
-        return out.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue, (c1, c2) -> c1, LinkedHashMap::new));
+        return out.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (c1, c2) -> c1, LinkedHashMap::new));
     }
 
     public static <I> void checkDependenciesSatisfied(Map<ComponentKey<?>, QualifiedComponentFactory<I>> factories) {
@@ -89,7 +94,7 @@ public final class QualifiedComponentFactory<I> {
         if (ex != null) throw ex;
     }
 
-    private static <I> void visitComponentNode(List<Entry<ComponentKey<?>, QualifiedComponentFactory<I>>> factories, Entry<ComponentKey<?>, QualifiedComponentFactory<I>> node, Deque<Entry<ComponentKey<?>, QualifiedComponentFactory<I>>> out) {
+    private static <I> void visitComponentNode(List<Map.Entry<ComponentKey<?>, QualifiedComponentFactory<I>>> factories, Map.Entry<ComponentKey<?>, QualifiedComponentFactory<I>> node, Deque<Map.Entry<ComponentKey<?>, QualifiedComponentFactory<I>>> out) {
         switch (node.getValue().sortingState) {
             case SORTED -> {}
             case SORTING -> throw new StaticComponentLoadingException("Circular dependency detected: " + node.getKey());

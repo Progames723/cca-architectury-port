@@ -42,7 +42,7 @@ public abstract class MixinLevelChunk {
     Level level;
 
     @Nullable
-    @ModifyVariable(method = "createTicker", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/chunk/LevelChunk$BoundTickingBlockEntity;<init>(Lnet/minecraft/world/level/chunk/LevelChunk;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/level/block/entity/BlockEntityTicker;)V"))
+    @ModifyVariable(method = "createTicker", at = @At(value = "RETURN"))
     private <T extends BlockEntity> BlockEntityTicker<T> getBlockEntityTicker(BlockEntityTicker<T> base, T blockEntity) {
         return StaticBlockComponentPlugin.INSTANCE.getComponentTicker(this.level, blockEntity, base);
     }

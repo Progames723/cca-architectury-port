@@ -23,6 +23,7 @@
 package dev.onyxstudios.cca.api.v3.block;
 
 import dev.onyxstudios.cca.internal.base.ComponentRegistrationInitializer;
+import dev.onyxstudios.cca.internal.block.StaticBlockComponentPlugin;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**

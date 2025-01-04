@@ -23,6 +23,8 @@
 package dev.onyxstudios.cca.api.v3.entity;
 
 import dev.onyxstudios.cca.internal.base.ComponentRegistrationInitializer;
+import dev.onyxstudios.cca.internal.block.StaticBlockComponentPlugin;
+import dev.onyxstudios.cca.internal.entity.StaticEntityComponentPlugin;
 import net.minecraft.world.entity.Entity;
 
 /**

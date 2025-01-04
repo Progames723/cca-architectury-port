@@ -26,7 +26,6 @@ import dev.architectury.networking.NetworkManager;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
-import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import dev.onyxstudios.cca.internal.base.ComponentsInternals;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
