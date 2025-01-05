@@ -22,7 +22,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "dev.onyxstudios.cca.fabric.Init"
+      "dev.progames723.cca_architectury_port.fabric.Init"
     ]
   },
   "mixins": [
