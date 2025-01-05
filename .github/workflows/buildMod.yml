@@ -1,0 +1,115 @@
+name: Build Mod Jar's
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "common/**"
+      - "fabric/**"
+      - "forge/**"
+      - "neoforge/**"
+      - "quilt/**"
+      - "build.gradle"
+      - "settings.gradle"
+      - "gradle.properties"
+  pull_request:
+    types: [ opened, reopened, synchronize, edited, ready_for_review, review_requested ]
+    paths:
+      - "common/**"
+      - "fabric/**"
+      - "forge/**"
+      - "neoforge/**"
+      - "quilt/**"
+      - "build.gradle"
+      - "settings.gradle"
+      - "gradle.properties"
+
+jobs:
+  build_fabric:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        if: ${{ hashFiles('**/fabric/build.gradle') != '' }}
+        run: ./gradlew :fabric:build
+      - name: Upload artifact
+        if: ${{ hashFiles('**/fabric/build.gradle') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cca_architectury_port-fabric-DEV
+          path: ./fabric/build/libs/*.jar
+          retention-days: 7
+          compression-level: 9
+  build_quilt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        if: ${{ hashFiles('**/quilt/build.gradle') != '' }}
+        run: ./gradlew :quilt:build
+      - name: Upload artifact
+        if: ${{ hashFiles('**/quilt/build.gradle') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cca_architectury_port-quilt-DEV
+          path: ./quilt/build/libs/*.jar
+          retention-days: 7
+          compression-level: 9
+  build_forge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        if: ${{ hashFiles('**/forge/build.gradle') != '' }}
+        run: ./gradlew :forge:build
+      - name: Upload artifact
+        if: ${{ hashFiles('**/forge/build.gradle') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cca_architectury_port-forge-DEV
+          path: ./forge/build/libs/*.jar
+          retention-days: 7
+          compression-level: 9
+  build_neoforge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        if: ${{ hashFiles('**/neoforge/build.gradle') != '' }}
+        run: ./gradlew :neoforge:build
+      - name: Upload artifact
+        if: ${{ hashFiles('**/neoforge/build.gradle') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cca_architectury_port-neoforge-DEV
+          path: ./neoforge/build/libs/*.jar
+          retention-days: 7
+          compression-level: 9

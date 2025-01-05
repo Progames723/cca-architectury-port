@@ -1,0 +1,26 @@
+name: Publish To Maven Repository
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Publish to Maven Local
+        run: ./gradlew publishToMavenLocal --no-daemon
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cca_architectury_port-Local-Maven-Repo
+          path: ~/.m2/repository/dev/progames723/*
+          retention-days: 7
+          compression-level: 9
